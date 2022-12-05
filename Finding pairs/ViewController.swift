@@ -172,21 +172,24 @@ extension ViewController {
     func flip(cellID: IndexPath) {
     
         if !game.cards[cellID.item].isMatched {
-            game.cards[cellID.item].backSideImageView.layer.opacity = 0
-            game.cards[cellID.item].imageView.layer.opacity = 1
+            
             game.cards[cellID.item].isCardShow = !game.cards[cellID.item].isCardShow
+            animatedSelection(cell: cellID)
             
             game.chooseCard(id: game.cards[cellID.item].ID, idx: cellID)
             
             if game.cards[cellID.item].isMatched {
-                game.cards[cellID.item].imageView.layer.opacity = 0
-                game.cards[cellID.item].backSideImageView.layer.opacity = 0
+                animatedSelection(cell: cellID)
+                animatedSelection(cell: game.firstCardIdx!)
                 game.cards[cellID.item].background = .clear
-                game.cards[game.firstCardIdx!.item].imageView.layer.opacity = 0
-                game.cards[game.firstCardIdx!.item].backSideImageView.layer.opacity = 0
                 game.cards[game.firstCardIdx!.item].background = .clear
                 collectionView.reloadItems(at: [cellID, game.firstCardIdx!])
             } else {
+                if let firstIdx = game.firstCardIdx {
+                    game.cards[firstIdx.item].isCardShow = false
+                    animatedSelection(cell: firstIdx)
+                    game.firstCardIdx = nil
+                }
                 animatedSelection(cell: cellID)
             }
             
@@ -196,33 +199,29 @@ extension ViewController {
     private func animatedSelection(cell: IndexPath) {
         
         UIView.animate(withDuration: 0.5,
-                       delay: 0.1,
+                       delay: 0.3,
                        usingSpringWithDamping: 0.8,
                        initialSpringVelocity: 0.2,
                        options: .transitionFlipFromTop) { [self] in
             
             if game.cards[cell.item].isCardShow {
-//                game.cards[cell.item].imageView.layer.cornerRadius = 1000
+                game.cards[cell.item].imageView.layer.opacity = 0
                 game.cards[cell.item].backSideImageView.layer.opacity = 1
             } else {
-                game.cards[cell.item].imageView.layer.cornerRadius = 12
                 game.cards[cell.item].backSideImageView.layer.opacity = 0
+                game.cards[cell.item].imageView.layer.opacity = 1
             }
             
         } completion: { _ in
-            UIView.animate(withDuration: 0.2,
+            UIView.animate(withDuration: 0.3, delay: 0.3,
                            animations: { [self] in
                 if game.cards[cell.item].isCardShow {
-                    game.cards[cell.item].imageView.layer.cornerRadius = 12
                     game.cards[cell.item].backSideImageView.layer.opacity = 0
                     game.cards[cell.item].imageView.layer.opacity = 1
                 } else {
-//                    game.cards[cell.item].imageView.layer.cornerRadius = 1000
                     game.cards[cell.item].imageView.layer.opacity = 0
-                    game.cards[cell.item].backSideImageView.layer.opacity = 1
-                    if let firstIdx = game.firstCardIdx {
-                        game.cards[firstIdx.item].imageView.layer.opacity = 0
-                        game.cards[firstIdx.item].backSideImageView.layer.opacity = 1
+                    if !game.cards[cell.item].isMatched {
+                        game.cards[cell.item].backSideImageView.layer.opacity = 1
                     }
                 }
             })
