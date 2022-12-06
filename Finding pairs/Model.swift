@@ -57,6 +57,7 @@ class Game {
     var uniqueCards = [Int: Card]()
     var oneCardShowIdx: IndexPath?
     var firstCardIdx: IndexPath?
+    var clickCounter = 0
     
     func chooseCard(id: Int, idx: IndexPath) {
         if let oneIdx = firstCardIdx {

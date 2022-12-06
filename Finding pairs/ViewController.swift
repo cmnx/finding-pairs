@@ -19,7 +19,6 @@ class ViewController: UIViewController {
 //MARK: - variables
 //    let randomIndex = Int(arc4random_uniform(UInt32(idx)))
     var game = Game()
-    
 // MARK: - views
     
     private lazy var backgndImView: UIImageView = {
@@ -45,14 +44,25 @@ class ViewController: UIViewController {
     private lazy var restartButton: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.backgroundColor = .black
-        $0.setTitle("Restart", for: .normal)
-        $0.setTitleColor(UIColor(red: 185, green: 150, blue: 85, alpha: 1), for: .normal)
+        $0.setTitle("Сброс", for: .normal)
+        $0.setTitleColor(UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0), for: .normal)
         $0.layer.cornerRadius = 20
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = CGColor(red: 185, green: 150, blue: 85, alpha: 1)
+        $0.layer.borderColor = CGColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0)
         $0.addTarget(self, action: #selector(restartGame), for: .touchUpInside)
         return $0
     }(UIButton())
+    
+    private lazy var clickCounterLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.textColor = UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
+        label.textAlignment = .center
+        label.text = ""
+        return label
+    }()
+    
 
 // MARK: - layout
     
@@ -60,7 +70,8 @@ class ViewController: UIViewController {
         
         [backgndImView,
          collectionView,
-         restartButton
+         restartButton,
+         clickCounterLabel
         ].forEach({ view.addSubview($0) })
 
         NSLayoutConstraint.activate([
@@ -75,7 +86,11 @@ class ViewController: UIViewController {
             restartButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             restartButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             restartButton.heightAnchor.constraint(equalToConstant: 50),
-            restartButton.widthAnchor.constraint(equalToConstant: 200)
+            restartButton.widthAnchor.constraint(equalToConstant: 200),
+            clickCounterLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            clickCounterLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100),
+            clickCounterLabel.heightAnchor.constraint(equalToConstant: 50),
+            clickCounterLabel.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
     }
 }
@@ -148,30 +163,31 @@ extension ViewController {
                        usingSpringWithDamping: 0.8,
                        initialSpringVelocity: 0.2,
                        options: .transitionFlipFromTop) { [self] in
-
             for i in game.cards.indices {
                 game.cards[i].imageView.layer.cornerRadius = 12
                 game.cards[i].backSideImageView.layer.opacity = 0
                 game.cards[i].imageView.layer.opacity = 1
                 game.cards[i].isCardShow = true
             }
-            
         } completion: { _ in
             UIView.animate(withDuration: 0.8, delay: 3.0,
                            animations: { [self] in
                 for i in game.cards.indices {
-                    //game.cards[i].imageView.layer.cornerRadius = 1000
                     game.cards[i].imageView.layer.opacity = 0
                     game.cards[i].backSideImageView.layer.opacity = 1
                     game.cards[i].isCardShow = false
                 }
             })
         }
+        clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
     }
     
     func flip(cellID: IndexPath) {
     
         if !game.cards[cellID.item].isMatched {
+            
+            game.clickCounter += 1
+            clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
             
             game.cards[cellID.item].isCardShow = !game.cards[cellID.item].isCardShow
             animatedSelection(cell: cellID)
@@ -192,7 +208,7 @@ extension ViewController {
                 }
                 animatedSelection(cell: cellID)
             }
-            
+
         }
     }
     
@@ -203,7 +219,6 @@ extension ViewController {
                        usingSpringWithDamping: 0.8,
                        initialSpringVelocity: 0.2,
                        options: .transitionFlipFromTop) { [self] in
-            
             if game.cards[cell.item].isCardShow {
                 game.cards[cell.item].imageView.layer.opacity = 0
                 game.cards[cell.item].backSideImageView.layer.opacity = 1
@@ -211,7 +226,6 @@ extension ViewController {
                 game.cards[cell.item].backSideImageView.layer.opacity = 0
                 game.cards[cell.item].imageView.layer.opacity = 1
             }
-            
         } completion: { _ in
             UIView.animate(withDuration: 0.3, delay: 0.3,
                            animations: { [self] in
@@ -226,19 +240,21 @@ extension ViewController {
                 }
             })
         }
-
+        
+        view.layoutIfNeeded()
     }
     
     @objc private func restartGame() {
-       
+        
         game.cards.shuffle()
+        game.clickCounter = 0
+        clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
         
         UIView.animate(withDuration: 1.0,
                        delay: 0.5,
                        usingSpringWithDamping: 0.8,
                        initialSpringVelocity: 0.2,
                        options: .transitionFlipFromTop) { [self] in
-
             for i in game.cards.indices {
                 game.cards[i].imageView.layer.cornerRadius = 12
                 game.cards[i].backSideImageView.layer.opacity = 0
@@ -247,12 +263,10 @@ extension ViewController {
                 game.cards[i].isCardShow = true
                 game.cards[i].background = .black
             }
-            
         } completion: { _ in
             UIView.animate(withDuration: 0.8, delay: 3.0,
                            animations: { [self] in
                 for i in game.cards.indices {
-//                    game.cards[i].imageView.layer.cornerRadius = 1000
                     game.cards[i].imageView.layer.opacity = 0
                     game.cards[i].backSideImageView.layer.opacity = 1
                     game.cards[i].isCardShow = false
@@ -260,6 +274,8 @@ extension ViewController {
                 }
             })
         }
+        
         collectionView.reloadData()
+        view.layoutIfNeeded()
     }
 }
