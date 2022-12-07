@@ -9,6 +9,10 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    deinit {
+        clock.invalidate()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
@@ -17,11 +21,18 @@ class ViewController: UIViewController {
     }
     
 //MARK: - variables
-//    let randomIndex = Int(arc4random_uniform(UInt32(idx)))
+
     var game = Game()
+    private let clickLabelPrefix = "Кликов минимум 16. Всего: "
+    private lazy var clock = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
+    //lazy var displayLink: Void = CADisplayLink(target: self, selector: #selector(updateClock)).add(to: .current, forMode: .default)
+    private var seconds = 0
+    private var minutes = 0
+    //    let randomIndex = Int(arc4random_uniform(UInt32(idx)))
+        
 // MARK: - views
     
-    private lazy var backgndImView: UIImageView = {
+    private var backgndImView: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.backgroundColor = .clear
         $0.image = UIImage(named: "background.png")
@@ -53,7 +64,7 @@ class ViewController: UIViewController {
         return $0
     }(UIButton())
     
-    private lazy var clickCounterLabel: UILabel = {
+    private var clickCounterLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20, weight: .regular)
@@ -63,6 +74,15 @@ class ViewController: UIViewController {
         return label
     }()
     
+    private var clockLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.textColor = UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
+        label.textAlignment = .center
+        label.text = "00 : 00"
+        return label
+    }()
 
 // MARK: - layout
     
@@ -71,7 +91,8 @@ class ViewController: UIViewController {
         [backgndImView,
          collectionView,
          restartButton,
-         clickCounterLabel
+         clickCounterLabel,
+         clockLabel
         ].forEach({ view.addSubview($0) })
 
         NSLayoutConstraint.activate([
@@ -79,18 +100,26 @@ class ViewController: UIViewController {
             backgndImView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backgndImView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             restartButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             restartButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             restartButton.heightAnchor.constraint(equalToConstant: 50),
             restartButton.widthAnchor.constraint(equalToConstant: 200),
+            
             clickCounterLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             clickCounterLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100),
             clickCounterLabel.heightAnchor.constraint(equalToConstant: 50),
-            clickCounterLabel.widthAnchor.constraint(equalTo: view.widthAnchor)
+            clickCounterLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
+
+            clockLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            clockLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            clockLabel.heightAnchor.constraint(equalToConstant: 50),
+            clockLabel.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
     }
 }
@@ -178,8 +207,10 @@ extension ViewController {
                     game.cards[i].isCardShow = false
                 }
             })
+            self.clock = self.clock
+            RunLoop.main.add(self.clock, forMode: RunLoop.Mode.common)
         }
-        clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
+        clickCounterLabel.text = clickLabelPrefix + String(game.clickCounter)
     }
     
     func flip(cellID: IndexPath) {
@@ -187,8 +218,8 @@ extension ViewController {
         if !game.cards[cellID.item].isMatched {
             
             game.clickCounter += 1
-            clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
-            
+            clickCounterLabel.text = clickLabelPrefix + String(game.clickCounter)
+
             game.cards[cellID.item].isCardShow = !game.cards[cellID.item].isCardShow
             animatedSelection(cell: cellID)
             
@@ -200,6 +231,9 @@ extension ViewController {
                 game.cards[cellID.item].background = .clear
                 game.cards[game.firstCardIdx!.item].background = .clear
                 collectionView.reloadItems(at: [cellID, game.firstCardIdx!])
+                if game.cards.filter({ $0.isMatched == true }).count == game.cards.count {
+                    clock.invalidate()
+                }
             } else {
                 if let firstIdx = game.firstCardIdx {
                     game.cards[firstIdx.item].isCardShow = false
@@ -211,7 +245,7 @@ extension ViewController {
 
         }
     }
-    
+        
     private func animatedSelection(cell: IndexPath) {
         
         UIView.animate(withDuration: 0.5,
@@ -246,9 +280,15 @@ extension ViewController {
     
     @objc private func restartGame() {
         
+        clock.invalidate()
+        clockLabel.text = "00 : 00"
+        seconds = 0
+        minutes = 0
         game.cards.shuffle()
         game.clickCounter = 0
-        clickCounterLabel.text = "Кликов минимум 16. Всего: \(game.clickCounter)"
+        game.firstCardIdx = nil
+        game.oneCardShowIdx = nil
+        clickCounterLabel.text = clickLabelPrefix + String(game.clickCounter)
         
         UIView.animate(withDuration: 1.0,
                        delay: 0.5,
@@ -263,7 +303,7 @@ extension ViewController {
                 game.cards[i].isCardShow = true
                 game.cards[i].background = .black
             }
-        } completion: { _ in
+        } completion: { [self] _ in
             UIView.animate(withDuration: 0.8, delay: 3.0,
                            animations: { [self] in
                 for i in game.cards.indices {
@@ -273,9 +313,24 @@ extension ViewController {
                     game.cards[i].background = .black
                 }
             })
+            clock = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
+            RunLoop.main.add(clock, forMode: RunLoop.Mode.common)
         }
-        
         collectionView.reloadData()
         view.layoutIfNeeded()
+    }
+    
+//MARK: - clock
+
+    @objc private func updateClock() {
+        
+        seconds += 1
+        if  seconds == 60 {
+            minutes += 1
+            seconds = 0
+        }
+        let secondsString = seconds > 9 ? "\(seconds)" : "0\(seconds)"
+        let minutesString = minutes > 9 ? "\(minutes)" : "0\(minutes)"
+        self.clockLabel.text = minutesString + " : " + secondsString
     }
 }
