@@ -54,12 +54,12 @@ class ViewController: UIViewController {
     
     private lazy var restartButton: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.backgroundColor = .black
-        $0.setTitle("Сброс", for: .normal)
-        $0.setTitleColor(UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0), for: .normal)
+        $0.backgroundColor = .white
+        $0.setTitle("Новая игра", for: .normal)
+        $0.setTitleColor(.gray, for: .normal) //(UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0), for: .normal)
         $0.layer.cornerRadius = 20
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = CGColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0)
+        $0.layer.borderColor = CGColor(gray: 0.8, alpha: 1.0) //CGColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0)
         $0.addTarget(self, action: #selector(restartGame), for: .touchUpInside)
         return $0
     }(UIButton())
@@ -68,7 +68,7 @@ class ViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
+        label.textColor = .lightGray //UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
         label.textAlignment = .center
         label.text = ""
         return label
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 20, weight: .regular)
-        label.textColor = UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
+        label.textColor = .lightGray //UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 0.8)
         label.textAlignment = .center
         label.text = "00 : 00"
         return label
@@ -301,7 +301,7 @@ extension ViewController {
                 game.cards[i].imageView.layer.opacity = 1
                 game.cards[i].isMatched = false
                 game.cards[i].isCardShow = true
-                game.cards[i].background = .black
+                game.cards[i].background = .white
             }
         } completion: { [self] _ in
             UIView.animate(withDuration: 0.8, delay: 3.0,
@@ -310,7 +310,7 @@ extension ViewController {
                     game.cards[i].imageView.layer.opacity = 0
                     game.cards[i].backSideImageView.layer.opacity = 1
                     game.cards[i].isCardShow = false
-                    game.cards[i].background = .black
+                    game.cards[i].background = .white
                 }
             })
             clock = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)

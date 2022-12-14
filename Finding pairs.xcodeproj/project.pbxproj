@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		04805A93293950E500794644 /* Finding pairs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Finding pairs.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04805A93293950E500794644 /* Мемори.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Мемори.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04805A96293950E500794644 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04805A98293950E500794644 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		04805A9A293950E500794644 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -52,7 +52,7 @@
 		04805A94293950E500794644 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04805A93293950E500794644 /* Finding pairs.app */,
+				04805A93293950E500794644 /* Мемори.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,9 +76,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		04805A92293950E500794644 /* Finding pairs */ = {
+		04805A92293950E500794644 /* Мемори */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04805AA7293950E900794644 /* Build configuration list for PBXNativeTarget "Finding pairs" */;
+			buildConfigurationList = 04805AA7293950E900794644 /* Build configuration list for PBXNativeTarget "Мемори" */;
 			buildPhases = (
 				04805A8F293950E500794644 /* Sources */,
 				04805A90293950E500794644 /* Frameworks */,
@@ -88,9 +88,9 @@
 			);
 			dependencies = (
 			);
-			name = "Finding pairs";
+			name = "Мемори";
 			productName = "Finding pairs";
-			productReference = 04805A93293950E500794644 /* Finding pairs.app */;
+			productReference = 04805A93293950E500794644 /* Мемори.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -121,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				04805A92293950E500794644 /* Finding pairs */,
+				04805A92293950E500794644 /* Мемори */,
 			);
 		};
 /* End PBXProject section */
@@ -296,7 +296,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -306,9 +306,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.sysq.Finding-pairs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -328,7 +331,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -338,9 +341,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.sysq.Finding-pairs";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -356,7 +362,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04805AA7293950E900794644 /* Build configuration list for PBXNativeTarget "Finding pairs" */ = {
+		04805AA7293950E900794644 /* Build configuration list for PBXNativeTarget "Мемори" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04805AA8293950E900794644 /* Debug */,

@@ -16,7 +16,7 @@ struct Card {
     var isCardShow = false
     var isMatched = false
     let ID: Int
-    var background: UIColor = .black
+    var background: UIColor = .white
     
     lazy var imageView: UIImageView = {
         var img = UIImageView()
@@ -54,7 +54,6 @@ struct Card {
 class Game {
     
     var cards = [Card]()
-    var uniqueCards = [Int: Card]()
     var oneCardShowIdx: IndexPath?
     var firstCardIdx: IndexPath?
     var clickCounter = 0
@@ -72,18 +71,15 @@ class Game {
                     cards[oneCardIdx].isMatched = true
                     cards[idx.item].isCardShow = false
                     cards[oneCardIdx].isCardShow = false
-//                    print("cards idx: \(idx.item) oneCardIdx: \(oneCardIdx) matched")
                     firstCardIdx = oneCardShowIdx
                     oneCardShowIdx = nil
                 } else {
-//                  print("hide idx and oneCard")
                     cards[idx.item].isCardShow = false
                     cards[oneCardIdx].isCardShow = false
                     firstCardIdx = oneCardShowIdx
                     oneCardShowIdx = nil
                 }
             } else {
-//                print("save one card idx")
                 cards[idx.item].isCardShow = true
                 oneCardShowIdx = idx
             }
@@ -91,9 +87,9 @@ class Game {
     }
     
     init() {
+        assert(numberOfPairsOfCards > 0, "game.init(): number of cards \(numberOfPairsOfCards). Min value is 1")
         for _ in 1...numberOfPairsOfCards {
             let card = Card()
-            uniqueCards[card.ID] = card
             cards += [card, card]
             cards.shuffle()
         }
