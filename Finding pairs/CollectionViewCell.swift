@@ -31,7 +31,13 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(backImg)
         contentView.addSubview(img)
         
-        let width: CGFloat = (UIScreen.main.bounds.width - 8 * 5) / 4
+        let size: CGFloat
+        
+        if UIDevice.current.orientation.isPortrait {
+            size = (UIScreen.main.bounds.width - 8 * 5) / 4
+        } else {
+            size = (UIScreen.main.bounds.height - 8 * 5) / 4
+        }
         
         NSLayoutConstraint.activate([
             img.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -39,13 +45,14 @@ class CollectionViewCell: UICollectionViewCell {
             img.topAnchor.constraint(equalTo: contentView.topAnchor),
             img.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             img.heightAnchor.constraint(equalTo: img.widthAnchor),
-            img.widthAnchor.constraint(equalToConstant: width),
+            img.widthAnchor.constraint(equalToConstant: size),
+            
             backImg.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             backImg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             backImg.topAnchor.constraint(equalTo: contentView.topAnchor),
             backImg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             backImg.heightAnchor.constraint(equalTo: backImg.widthAnchor),
-            backImg.widthAnchor.constraint(equalToConstant: width)
+            backImg.widthAnchor.constraint(equalToConstant: size)
         ])
     }
 }

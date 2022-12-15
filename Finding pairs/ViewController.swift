@@ -20,10 +20,28 @@ class ViewController: UIViewController {
         firstLoad()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        if UIDevice.current.orientation.isPortrait {
+            NSLayoutConstraint.deactivate(layoutLandscape)
+            NSLayoutConstraint.activate(layoutPortrait)
+        } else {
+            NSLayoutConstraint.deactivate(layoutPortrait)
+            NSLayoutConstraint.activate(layoutLandscape)
+        }
+        collectionView.layoutIfNeeded()
+        view.layoutIfNeeded()
+    }
+    
 //MARK: - variables
 
     var game = Game()
-    private let clickLabelPrefix = "Кликов минимум 16. Всего: "
+
+    var layoutPortrait = [NSLayoutConstraint]()
+    var layoutLandscape = [NSLayoutConstraint]()
+
+    private let clickLabelPrefix = "Ходов: "
     private lazy var clock = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
     //lazy var displayLink: Void = CADisplayLink(target: self, selector: #selector(updateClock)).add(to: .current, forMode: .default)
     private var seconds = 0
@@ -56,10 +74,10 @@ class ViewController: UIViewController {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.backgroundColor = .white
         $0.setTitle("Новая игра", for: .normal)
-        $0.setTitleColor(.gray, for: .normal) //(UIColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0), for: .normal)
+        $0.setTitleColor(UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0), for: .normal)
         $0.layer.cornerRadius = 20
         $0.layer.borderWidth = 1
-        $0.layer.borderColor = CGColor(gray: 0.8, alpha: 1.0) //CGColor(red: 0.73, green: 0.59, blue: 0.33, alpha: 1.0)
+        $0.layer.borderColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
         $0.addTarget(self, action: #selector(restartGame), for: .touchUpInside)
         return $0
     }(UIButton())
@@ -94,8 +112,8 @@ class ViewController: UIViewController {
          clickCounterLabel,
          clockLabel
         ].forEach({ view.addSubview($0) })
-
-        NSLayoutConstraint.activate([
+        
+        layoutPortrait = [
             backgndImView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backgndImView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -108,19 +126,51 @@ class ViewController: UIViewController {
             
             restartButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             restartButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            restartButton.heightAnchor.constraint(equalToConstant: 50),
+            restartButton.heightAnchor.constraint(equalToConstant: 60),
             restartButton.widthAnchor.constraint(equalToConstant: 200),
             
             clickCounterLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            clickCounterLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100),
-            clickCounterLabel.heightAnchor.constraint(equalToConstant: 50),
+            clickCounterLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -60),
+            clickCounterLabel.heightAnchor.constraint(equalToConstant: 30),
             clickCounterLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
 
             clockLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            clockLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
-            clockLabel.heightAnchor.constraint(equalToConstant: 50),
+            clockLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            clockLabel.heightAnchor.constraint(equalToConstant: 30),
             clockLabel.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
+        ]
+        
+        layoutLandscape = [
+            backgndImView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgndImView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            backgndImView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 190),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor),
+            
+            restartButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            restartButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            restartButton.heightAnchor.constraint(equalToConstant: 50),
+            restartButton.widthAnchor.constraint(equalToConstant: 150),
+            
+            clickCounterLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            clickCounterLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            clickCounterLabel.heightAnchor.constraint(equalToConstant: 30),
+            clickCounterLabel.widthAnchor.constraint(equalToConstant: 150),
+
+            clockLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            clockLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            clockLabel.heightAnchor.constraint(equalToConstant: 30),
+            clockLabel.widthAnchor.constraint(equalToConstant: 150)
+            
+//            equalToConstant: UIScreen.main.bounds.height
+        ]
+        
+        UIDevice.current.orientation.isPortrait ?
+        NSLayoutConstraint.activate(layoutPortrait) : NSLayoutConstraint.activate(layoutLandscape)
     }
 }
 
@@ -158,8 +208,15 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let width = (collectionView.bounds.width - inset * 5) / 4
-        return CGSize(width: width, height: width)
+        let size: CGFloat
+        
+        if UIDevice.current.orientation.isPortrait {
+            size = (collectionView.bounds.width - inset * 5) / 4
+        } else {
+            size = (collectionView.bounds.height - inset * 5) / 4
+        }
+        
+        return CGSize(width: size, height: size)
     }
 
 // MARK: - insets for collection
@@ -211,6 +268,8 @@ extension ViewController {
             RunLoop.main.add(self.clock, forMode: RunLoop.Mode.common)
         }
         clickCounterLabel.text = clickLabelPrefix + String(game.clickCounter)
+
+
     }
     
     func flip(cellID: IndexPath) {
