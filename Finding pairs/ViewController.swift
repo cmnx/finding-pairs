@@ -23,13 +23,32 @@ class ViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        if UIDevice.current.orientation.isPortrait {
+        let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+
+        if orientation == .portrait || orientation == .portraitUpsideDown || UIDevice.current.orientation.isPortrait {
             NSLayoutConstraint.deactivate(layoutLandscape)
             NSLayoutConstraint.activate(layoutPortrait)
         } else {
             NSLayoutConstraint.deactivate(layoutPortrait)
             NSLayoutConstraint.activate(layoutLandscape)
         }
+        
+        view.layoutIfNeeded()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+
+        if orientation == .portrait || orientation == .portraitUpsideDown || UIDevice.current.orientation.isPortrait {
+            layoutLandscape.isEmpty ? () : NSLayoutConstraint.deactivate(layoutLandscape)
+            NSLayoutConstraint.activate(layoutPortrait)
+        } else {
+            layoutPortrait.isEmpty ? () : NSLayoutConstraint.deactivate(layoutPortrait)
+            NSLayoutConstraint.activate(layoutLandscape)
+        }
+
         collectionView.layoutIfNeeded()
         view.layoutIfNeeded()
     }
@@ -146,13 +165,13 @@ class ViewController: UIViewController {
             backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backgndImView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 190),
+            collectionView.leadingAnchor.constraint(equalTo: restartButton.trailingAnchor, constant: 30),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor),
             
             restartButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            restartButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            restartButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30),
             restartButton.heightAnchor.constraint(equalToConstant: 50),
             restartButton.widthAnchor.constraint(equalToConstant: 150),
             
@@ -166,11 +185,8 @@ class ViewController: UIViewController {
             clockLabel.heightAnchor.constraint(equalToConstant: 30),
             clockLabel.widthAnchor.constraint(equalToConstant: 150)
             
-//            equalToConstant: UIScreen.main.bounds.height
+//          equalToConstant: UIScreen.main.bounds.height
         ]
-        
-        UIDevice.current.orientation.isPortrait ?
-        NSLayoutConstraint.activate(layoutPortrait) : NSLayoutConstraint.activate(layoutLandscape)
     }
 }
 
@@ -210,7 +226,8 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         
         let size: CGFloat
         
-        if UIDevice.current.orientation.isPortrait {
+        let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+        if orientation == .portrait || orientation == .portraitUpsideDown || UIDevice.current.orientation.isPortrait {
             size = (collectionView.bounds.width - inset * 5) / 4
         } else {
             size = (collectionView.bounds.height - inset * 5) / 4
@@ -271,6 +288,8 @@ extension ViewController {
 
 
     }
+
+//MARK: -- flip
     
     func flip(cellID: IndexPath) {
     
@@ -292,6 +311,7 @@ extension ViewController {
                 collectionView.reloadItems(at: [cellID, game.firstCardIdx!])
                 if game.cards.filter({ $0.isMatched == true }).count == game.cards.count {
                     clock.invalidate()
+                    endOfGame()
                 }
             } else {
                 if let firstIdx = game.firstCardIdx {
@@ -304,7 +324,9 @@ extension ViewController {
 
         }
     }
-        
+
+//MARK: -- animate selection
+    
     private func animatedSelection(cell: IndexPath) {
         
         UIView.animate(withDuration: 0.5,
@@ -336,6 +358,33 @@ extension ViewController {
         
         view.layoutIfNeeded()
     }
+
+//MARK: -- end alert
+    
+    private func endOfGame() {
+        let alert = UIAlertController(title: "Игра закончена.\nМолодец!\n", message: "\n\n\n\n\n\nСыграем ещё раз?", preferredStyle: .alert)
+        let imgView = UIImageView()
+        let imgArray = [
+            UIImage(named: "yellowstar"),
+            UIImage(named: "molodets"),
+            UIImage(named: "umnitsa")
+        ]
+        
+        imgView.image = imgArray.randomElement() ?? UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        alert.view.addSubview(imgView)
+        
+        imgView.translatesAutoresizingMaskIntoConstraints = false
+        alert.view.addConstraint(NSLayoutConstraint(item: imgView, attribute: .centerX, relatedBy: .equal, toItem: alert.view, attribute: .centerX, multiplier: 1, constant: 0))
+        alert.view.addConstraint(NSLayoutConstraint(item: imgView, attribute: .centerY, relatedBy: .equal, toItem: alert.view, attribute: .centerY, multiplier: 1, constant: -10))
+        alert.view.addConstraint(NSLayoutConstraint(item: imgView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100.0))
+        alert.view.addConstraint(NSLayoutConstraint(item: imgView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100.0))
+        
+        let action = UIAlertAction(title: "Да!", style: .cancel, handler: {_ in self.restartGame() })
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+//MARK: -- new game
     
     @objc private func restartGame() {
         
@@ -379,7 +428,7 @@ extension ViewController {
         view.layoutIfNeeded()
     }
     
-//MARK: - clock
+//MARK: -- clock
 
     @objc private func updateClock() {
         
