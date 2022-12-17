@@ -32,8 +32,6 @@ class ViewController: UIViewController {
             NSLayoutConstraint.deactivate(layoutPortrait)
             NSLayoutConstraint.activate(layoutLandscape)
         }
-        
-        view.layoutIfNeeded()
     }
     
     override func viewDidLayoutSubviews() {
@@ -48,8 +46,8 @@ class ViewController: UIViewController {
             layoutPortrait.isEmpty ? () : NSLayoutConstraint.deactivate(layoutPortrait)
             NSLayoutConstraint.activate(layoutLandscape)
         }
-
-        collectionView.layoutIfNeeded()
+        
+        collectionView.collectionViewLayout.invalidateLayout()
         view.layoutIfNeeded()
     }
     
@@ -133,13 +131,13 @@ class ViewController: UIViewController {
         ].forEach({ view.addSubview($0) })
         
         layoutPortrait = [
-            backgndImView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgndImView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgndImView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            backgndImView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backgndImView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
@@ -160,8 +158,8 @@ class ViewController: UIViewController {
         ]
         
         layoutLandscape = [
-            backgndImView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgndImView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgndImView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            backgndImView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             backgndImView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             backgndImView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
@@ -229,8 +227,10 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
         if orientation == .portrait || orientation == .portraitUpsideDown || UIDevice.current.orientation.isPortrait {
             size = (collectionView.bounds.width - inset * 5) / 4
+//            size = ((UIApplication.shared.windows.first?.windowScene?.screen.bounds.width)! - inset * 5) / 4
         } else {
             size = (collectionView.bounds.height - inset * 5) / 4
+//            size = ((UIApplication.shared.windows.first?.windowScene?.screen.bounds.height)! - inset * 5) / 4
         }
         
         return CGSize(width: size, height: size)
@@ -367,7 +367,9 @@ extension ViewController {
         let imgArray = [
             UIImage(named: "yellowstar"),
             UIImage(named: "molodets"),
-            UIImage(named: "umnitsa")
+            UIImage(named: "umnitsa"),
+            UIImage(named: "yellowstar2"),
+            UIImage(named: "yellowstar3")
         ]
         
         imgView.image = imgArray.randomElement() ?? UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
