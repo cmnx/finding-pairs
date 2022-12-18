@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 let numberOfPairsOfCards = 8
 
@@ -57,6 +58,7 @@ class Game {
     var oneCardShowIdx: IndexPath?
     var firstCardIdx: IndexPath?
     var clickCounter = 0
+    var audioPlayer: AVAudioPlayer?
     
     func chooseCard(id: Int, idx: IndexPath) {
         if let oneIdx = firstCardIdx {
@@ -69,11 +71,13 @@ class Game {
                 if cards[idx.item].ID == cards[oneCardIdx].ID {
                     cards[idx.item].isMatched = true
                     cards[oneCardIdx].isMatched = true
+                    play(sound: "correct")
                     cards[idx.item].isCardShow = false
                     cards[oneCardIdx].isCardShow = false
                     firstCardIdx = oneCardShowIdx
                     oneCardShowIdx = nil
                 } else {
+                    play(sound: "error")
                     cards[idx.item].isCardShow = false
                     cards[oneCardIdx].isCardShow = false
                     firstCardIdx = oneCardShowIdx
@@ -83,6 +87,23 @@ class Game {
                 cards[idx.item].isCardShow = true
                 oneCardShowIdx = idx
             }
+        }
+    }
+    
+    private func play(sound: String?) {
+        guard let path = Bundle.main.path(forResource: sound, ofType: "mp3") else { return }
+        let url = URL(fileURLWithPath: path)
+        
+        do {
+            try audioPlayer = AVAudioPlayer.init(contentsOf: url)
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
+            try AVAudioSession.sharedInstance().setActive(true)
+            audioPlayer?.delegate = self as? AVAudioPlayerDelegate
+            audioPlayer?.volume = 1.0
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch let error {
+            print("\(error.localizedDescription): audiofile not found")
         }
     }
     

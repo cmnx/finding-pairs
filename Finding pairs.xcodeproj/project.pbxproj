@@ -15,6 +15,8 @@
 		04805AAD2939734700794644 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04805AAC2939734700794644 /* CollectionViewCell.swift */; };
 		04805AAF2939755D00794644 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04805AAE2939755D00794644 /* Extensions.swift */; };
 		04805AB6293C936500794644 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04805AB4293C936300794644 /* LaunchScreen.storyboard */; };
+		04B7BC3E294FD6BB00EBA629 /* error.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 04B7BC3C294FD6BA00EBA629 /* error.mp3 */; };
+		04B7BC3F294FD6BB00EBA629 /* correct.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 04B7BC3D294FD6BA00EBA629 /* correct.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		04805AAE2939755D00794644 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		04805AB2293A1F1D00794644 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04805AB5293C936300794644 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Finding pairs/Base.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
+		04B7BC3C294FD6BA00EBA629 /* error.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = error.mp3; sourceTree = "<group>"; };
+		04B7BC3D294FD6BA00EBA629 /* correct.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = correct.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +48,7 @@
 		04805A8A293950E400794644 = {
 			isa = PBXGroup;
 			children = (
+				04B7BC3B294FD61700EBA629 /* Sounds */,
 				04805A95293950E500794644 /* Finding pairs */,
 				04805A94293950E500794644 /* Products */,
 			);
@@ -71,6 +76,15 @@
 				04805AB2293A1F1D00794644 /* Info.plist */,
 			);
 			path = "Finding pairs";
+			sourceTree = "<group>";
+		};
+		04B7BC3B294FD61700EBA629 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				04B7BC3D294FD6BA00EBA629 /* correct.mp3 */,
+				04B7BC3C294FD6BA00EBA629 /* error.mp3 */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -133,6 +147,8 @@
 			files = (
 				04805AA0293950E900794644 /* Assets.xcassets in Resources */,
 				04805AB6293C936500794644 /* LaunchScreen.storyboard in Resources */,
+				04B7BC3E294FD6BB00EBA629 /* error.mp3 in Resources */,
+				04B7BC3F294FD6BB00EBA629 /* correct.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
